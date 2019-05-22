@@ -8,4 +8,8 @@ RUN rm -rf /var/cache/apk/*
 COPY . /app
 RUN cd /app; npm install
 
+ENV PM_PORT 8080
+ENV PM_HOST 0.0.0.0
+
 EXPOSE 8080
+CMD node /app/src/index.js

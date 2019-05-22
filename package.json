@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/kubkaf/Profile-microservice/issues"
   },
-  "homepage": "https://github.com/kubkaf/Profile-microservice#readme"
+  "homepage": "https://github.com/kubkaf/Profile-microservice#readme",
+  "dependencies": {
+    "hapi": "^18.1.0"
+  }
 }
