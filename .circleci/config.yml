@@ -55,7 +55,7 @@ jobs:
     environment:
       - Tag: "v0.14"
       - ImageName: profile-image
-      - DeploymentName: pr-public
+      - DeploymentName: profile-microservice
     steps:
       - checkout
       - run:
