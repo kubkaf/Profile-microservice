@@ -53,7 +53,7 @@ jobs:
   push-azure-image:
     machine: true
     environment:
-      - Tag: "v0.12"
+      - Tag: "v0.13"
       - ImageName: profile-image
       - DeploymentName: pr-public
     steps:
@@ -67,7 +67,7 @@ jobs:
 
       - run:
           name: Push Service Docker Image
-          command: 'docker push kubkafqaaacr.azurecr.io/profile-image:${Tag}'
+          command: 'docker push kubkafqaaa cr.azurecr.io/profile-image:${Tag}'
 
 workflows:
   version: 2
