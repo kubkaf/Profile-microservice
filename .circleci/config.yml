@@ -4,34 +4,78 @@
 #
 version: 2
 jobs:
-  build:
+  test-locally:
     docker:
       # specify the version you desire here
-      - image: circleci/node:7.10
+#      - image: docker:17.05.0-ce-git
+      - image: alpine:3.7
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
 
-    working_directory: ~/repo
+    working_directory: ~/app
 
     steps:
       - checkout
+#      - setup_remote_docker
+
+      - run:
+          name: Validate config file style
+          command: 'circleci config validate -c .circleci/config.yml'
+      - run:
+          name:  Update alpine image
+          command: 'apk update && apk upgrade'
+
+      - run:
+          name:  Add node js
+          command: 'apk add nodejs'
 
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: yarn install
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run:
+          name: NPM install
+          command: 'npm install'
+      - run:
+          name: Run tests
+          command: 'npm test'
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
-      - run: yarn test
+  push-azure-image:
+    machine: true
+    environment:
+      - Tag: "v0.12"
+      - ImageName: profile-image
+      - DeploymentName: pr-public
+    steps:
+      - checkout
+      - run:
+          name: Login to ACR
+          command: 'docker login $AZURE_REGISTRY_NAME -u $AZURE_DOCKER_USER -p $AZURE_DOCKER_PASS'
+      - run:
+          name: Build Docker Image
+          command: 'docker build -t kubkafqaaacr.azurecr.io/profile-image:${Tag} .'
+
+      - run:
+          name: Push Service Docker Image
+          command: 'docker push kubkafqaaacr.azurecr.io/profile-image:${Tag}'
+
+workflows:
+  version: 2
+  test-and-build-image:
+    jobs:
+      - push-azure-image:
+         filters:
+            branches:
+               only:
+                  - master-docker-image
+                  - qa-docker-image
