@@ -53,7 +53,7 @@ jobs:
   push-azure-image:
     machine: true
     environment:
-      - Tag: "v0.13"
+      - Tag: "v0.14"
       - ImageName: profile-image
       - DeploymentName: pr-public
     steps:
@@ -63,7 +63,7 @@ jobs:
           command: 'docker login $AZURE_REGISTRY_NAME -u $AZURE_DOCKER_USER -p $AZURE_DOCKER_PASS'
       - run:
           name: Build Docker Image
-          command: 'docker build -t kubkafqaaacr.azurecr.io/profile-image:${Tag} .'
+          command: 'docker build -t kubkafqaaacr.azurecr.io/profile-image:${Tag} .  --build-arg PM_PORT=8080  --build-arg PM_HOST=0.0.0.0'
 
       - run:
           name: Push Service Docker Image
