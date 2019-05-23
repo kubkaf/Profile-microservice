@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/kubkaf/Profile-microservice#readme",
   "dependencies": {
-    "hapi": "^18.1.0"
+    "@hapi/hapi": "^18.3.1"
   }
 }
